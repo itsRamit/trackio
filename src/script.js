@@ -9,10 +9,17 @@ document.getElementById('track-button').addEventListener('click', function () {
 
 document.getElementById('close-email-form').addEventListener('click', () => {
     document.getElementById('email-form').classList.add('hidden');
+
+    const messageBox = document.getElementById('message-box');
+    if (messageBox) {
+        messageBox.innerText = "";
+        messageBox.classList.remove("text-green-500", "text-red-500");
+    }
 });
 
+
 function fetchPrices() {
-    const apiUrl = "http://localhost:3001/api/get-product";
+    const apiUrl = "http://localhost:3001/api/scrape-product";
     const requestBody = {
         flipkartUrl: document.getElementById("flipkartUrl").value,
         amazonUrl: document.getElementById("amazonUrl").value
@@ -22,7 +29,6 @@ function fetchPrices() {
     const placeholderText = document.getElementById("placeholder-text");
     const productDetails = document.getElementById("product-details");
 
-    // Show loader & keep placeholder text visible
     loadingSpinner.classList.remove("hidden");
     placeholderText.classList.remove("hidden");
     productDetails.classList.add("hidden");
@@ -65,5 +71,62 @@ function updateProductDetails(data) {
 }
 
 document.getElementById("search-button").addEventListener("click", fetchPrices);
+
+async function trackPrices(event) {
+    event.preventDefault();
+    const apiUrl = "http://localhost:3001/api/track-product";
+
+    const submitButton = document.getElementById("submit-button");
+    submitButton.innerHTML = "Tracking...";
+    submitButton.disabled = true;
+
+    const requestBody = {
+        flipkartUrl: document.getElementById("flipkartUrl")?.value || "",
+        amazonUrl: document.getElementById("amazonUrl")?.value || "",
+        emailId: document.getElementById("emailInput").value,
+        thresholdPrice: document.getElementById("priceInput").value
+    };
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            showMessage("Tracking started successfully!", "text-green-500");
+            document.getElementById("emailInput").value = "";
+            document.getElementById("priceInput").value = "";
+        } else {
+            showMessage("Failed to track the product. Try again!", "text-red-500");
+        }
+    } catch (error) {
+        showMessage("An error occurred. Please try again!", "text-red-500");
+        console.error("Error:", error);
+    } finally {
+        submitButton.innerHTML = "Submit";
+        submitButton.disabled = false;
+    }
+}
+
+
+function showMessage(message, colorClass) {
+    let messageBox = document.getElementById("message-box");
+
+    if (!messageBox) {
+        messageBox = document.createElement("p");
+        messageBox.id = "message-box";
+        messageBox.className = "mt-2 text-center font-semibold";
+        document.getElementById("email-form").appendChild(messageBox);
+    }
+
+    messageBox.textContent = message;
+    messageBox.className = `mt-2 text-center font-semibold ${colorClass}`;
+}
+document.getElementById("submit-button").addEventListener("click", trackPrices);
+
 
 
