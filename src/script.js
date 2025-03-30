@@ -19,6 +19,28 @@ document.getElementById('close-email-form').addEventListener('click', () => {
 
 
 function fetchPrices() {
+    const flipkartUrl = document.getElementById("flipkartUrl").value.trim();
+    const amazonUrl = document.getElementById("amazonUrl").value.trim();
+
+    // Flipkart URL regex (matches product URLs)
+    const flipkartRegex = /^https?:\/\/(www\.)?flipkart\.com\/.+/i;
+    // Amazon URL regex (matches product URLs for multiple domains)
+    const amazonRegex = /^https?:\/\/(www\.)?amazon\.(in|com|co\.uk|de|fr|ca|jp|sg|au|it|es|nl|mx|br)\/.+/i;
+
+    if (!flipkartUrl && !amazonUrl) {
+      alert("Please enter at least one URL before searching.");
+      return;
+    }
+
+    if (flipkartUrl && !flipkartRegex.test(flipkartUrl)) {
+      alert("Please enter a valid Flipkart product URL.");
+      return;
+    }
+
+    if (amazonUrl && !amazonRegex.test(amazonUrl)) {
+      alert("Please enter a valid Amazon product URL.");
+      return;
+    }
     const apiUrl = "https://trackio-scrapper-production.up.railway.app/api/scrape-product";
     const requestBody = {
         flipkartUrl: document.getElementById("flipkartUrl").value,
