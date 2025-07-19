@@ -41,7 +41,7 @@ function fetchPrices() {
       alert("Please enter a valid Amazon product URL.");
       return;
     }
-    const apiUrl = "https://trackio-scrapper-production.up.railway.app/api/scrape-product";
+    const apiUrl = "https://trackio-erhcd6b7fvaxe3bv.centralindia-01.azurewebsites.net/api/scrape-product";
     const requestBody = {
         flipkartUrl: document.getElementById("flipkartUrl").value,
         amazonUrl: document.getElementById("amazonUrl").value
@@ -96,7 +96,7 @@ document.getElementById("search-button").addEventListener("click", fetchPrices);
 
 async function trackPrices(event) {
     event.preventDefault();
-    const apiUrl = "https://trackio-scrapper-production.up.railway.app/api/track-product";
+    const apiUrl = "https://trackio-erhcd6b7fvaxe3bv.centralindia-01.azurewebsites.net/api/track-product";
 
     const submitButton = document.getElementById("submit-button");
     submitButton.innerHTML = "Tracking...";
